@@ -1,13 +1,13 @@
-dash==2.17.1
-plotly==5.24.1
-pandas==2.2.3
-numpy==1.26.4
-requests==2.32.3
-python-dateutil==2.9.0.post0
-pytz==2024.2
+dash
+plotly
+pandas
+numpy
+requests
+python-dateutil
+pytz
 
 # yahooquery dependencies
-yahooquery==2.3.7
-lxml==4.9.3
-beautifulsoup4==4.14.2
-html5lib==1.1
+yahooquery
+lxml
+beautifulsoup4
+html5lib
