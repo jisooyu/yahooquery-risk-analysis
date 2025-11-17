@@ -12,7 +12,7 @@ def build_layout(RISK_TICKERS):
             id="tabs",
             value="Volatility",
             children=[dcc.Tab(label=k, value=k) for k in RISK_TICKERS],
-            colors={"border": "#444", "primary": "#00ccff", "background": "#222"}
+            colors={"border": "#444", "primary": "#00ccff", "background": "#222"},
         ),
 
         html.Div(id="panel-output")

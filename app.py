@@ -6,6 +6,8 @@ from callbacks import register_callbacks
 # Working tickers only
 RISK_TICKERS = {
     "Signal Guide": [],
+    "FRED Macro": [],
+    "Recession Risk": [],  
     "Volatility": ["^VIX", "^VIX3M", "^VIX6M", "^VXN", "^SKEW"],
     "Credit Risk": ["HYG", "JNK", "LQD"],
     "Treasury Yields": ["^FVX", "^TNX", "^TYX"],
