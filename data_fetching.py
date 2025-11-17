@@ -4,52 +4,48 @@ import pandas as pd
 
 def fetch_data(ticker_groups):
     """
-    Fetch multi-ticker daily close prices using yahooquery.
-    This avoids the heavy rate limits of yfinance and is Render-friendly.
+    Fetch multi-ticker daily prices using yahooquery.
+    Always prefer adjclose to match yfinance.
     """
 
-    # Flatten ticker list
     tickers = sum(ticker_groups.values(), [])
 
-    # Use yahooquery - much more reliable and no rate limits
     tq = Ticker(tickers, asynchronous=True, max_workers=8)
 
-    # Fetch 1-year daily historical data
+    # Fetch historical OHLCV
     data = tq.history(period="1y", interval="1d")
 
-    # If yahooquery fails completely
     if data is None or data.empty:
         return pd.DataFrame()
 
     # ----------------------------------------------------------
-    # yahooquery returns a MultiIndex: (ticker, date)
-    # or a DataFrame with MultiIndex columns
+    # yahooquery usually returns MultiIndex (ticker, date)
     # ----------------------------------------------------------
-
-    # If history returned series for multiple tickers:
-    # Format:
-    #   close  open ...
-    # ticker  date
     if isinstance(data.index, pd.MultiIndex):
 
-        # pivot close prices into columns
-        if "close" in data.columns:
-            df = data["close"].unstack(level=0)
-        else:
-            # some ETFs may use 'adjclose'
+        # Prefer adjclose if present
+        if "adjclose" in data.columns:
             df = data["adjclose"].unstack(level=0)
 
+        # Fall back to close only when required
+        elif "close" in data.columns:
+            df = data["close"].unstack(level=0)
+
+        else:
+            return pd.DataFrame()
+
     else:
-        # Single ticker edge case
-        if "close" in data.columns:
+        # Single ticker case
+        if "adjclose" in data.columns:
+            df = data[["adjclose"]]
+        elif "close" in data.columns:
             df = data[["close"]]
         else:
-            df = data[["adjclose"]]
+            return pd.DataFrame()
 
-    # Cleanup: forward-fill + drop full-empty columns
     df = df.ffill().dropna(how="all")
 
-    # Keep only tickers Yahoo actually returned
-    df = df[[c for c in df.columns if c in tickers]]
+    # Keep only requested tickers
+    df = df[[col for col in df.columns if col in tickers]]
 
     return df
