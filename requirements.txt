@@ -5,7 +5,7 @@ numpy
 requests
 python-dateutil
 pytz
-
+pandas_datareader
 # yahooquery dependencies
 yahooquery
 lxml
